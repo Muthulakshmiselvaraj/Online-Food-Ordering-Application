@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import com.online.foodapp.model.UserData;
 import com.online.foodapp.Dao.UserDAO;
-
+import com.online.foodapp.Validator_User.UserValidator;
 public class UserHelper{
     private Scanner scanner;
     private UserData userData;
@@ -20,41 +20,88 @@ public class UserHelper{
        this.foodOrder = foodOrder;
        this.admin = admin;
     }
+        
+      public void signUp() {
     
-      public void signUp(){
-           System.out.println("Enter Your Name:");
-           userData.setName(scanner.nextLine());
-           System.out.println("Enter Your EmailID :");
-           userData.setEmail(scanner.nextLine());
-           System.out.println("Enter Your PhoneNumber :");
-           userData.setPhoneNum(scanner.nextLong());
-           scanner.nextLine();
-             if(userData.getPhoneNum() == null){
-                return;
-             }
-           System.out.println("Enter Your Address :");
-           userData.setAddress(scanner.nextLine());
-           System.out.println("Enter Your Password :");
-           userData.setPassword(scanner.nextLine());
-           
-          userDao.addUser(userData);
-          int id = userDao.getId(userData.getEmail(),userData.getPassword());
-          loginpage(id);
-      }
+    String name;
+    boolean isValid;
+    do {
+        System.out.println("Enter Your Name:");
+        name = scanner.nextLine();
+        isValid = UserValidator.validateInput("name", name);
+        if (!isValid) {
+            System.out.println("Invalid Name. Please try again.");
+        }
+    } while (!isValid); 
+    userData.setName(name);
+
+    String email;
+    do {
+        System.out.println("Enter Your EmailID:");
+        email = scanner.nextLine();
+        isValid = UserValidator.validateInput("email", email);
+        if (!isValid) {
+            System.out.println("Invalid email. Please try again.");
+        }
+    } while (!isValid);
+    userData.setEmail(email);
+    
+    String phone;
+    do {
+        System.out.println("Enter Your PhoneNumber:");
+        phone = scanner.nextLine();
+        isValid = UserValidator.validateInput("phoneNumber", phone); 
+        if (!isValid) {
+            System.out.println("Invalid phone number. Please try again.");
+        }
+    } while (!isValid); 
+    userData.setPhoneNum(Long.parseLong(phone));
+
+    
+    String address;
+    do {
+        System.out.println("Enter Your Address:");
+        address = scanner.nextLine().trim();
+        isValid = UserValidator.validateInput("address", address); 
+        if (!isValid) {
+            System.out.println("Invalid address format. Please try again.");
+        }
+    } while (!isValid); 
+    userData.setAddress(address);
+
+    String password;
+    do {
+        System.out.println("Enter Your Password (password must be 6-8 characters with at least one special character):");
+        password = scanner.nextLine();
+        isValid = UserValidator.validateInput("password", password);
+        if (!isValid) {
+            System.out.println("Invalid password format. Please try again.");
+        }
+    } while (!isValid); 
+    userData.setPassword(password);
+
+    
+    userDao.addUser(userData);
+    System.out.println("Hi " + userData.getName() + ", Welcome to Our Fresh Feast");
+    System.out.println("---------------------------------------------------");
+
+    
+    int id = userDao.getId(userData.getEmail(), userData.getPassword());
+    loginpage(id);
+}
+
       public void loginpage(int userId){
            System.out.println("Enter Your Choice :");
-           System.out.println("1.Add Resutaurant\n2.Ordering Food ");
+           System.out.println("1. Add Resutaurant\n2. Ordering Food ");
            int choice = scanner.nextInt();
            scanner.nextLine();
-           String query ="";
            switch(choice){
            case 1:
              hotel.addRestaurant(userId);
              break;
            case 2:
+             userDao.setRole("customer",userData.getUserId());
              foodOrder.displayFood(userId);
-             query = "UPDATE SIGNUP SET ROLE = 'CUSTOMER' WHERE USERID = ? ;" ;
-             userDao.setRole(query,userData.getUserId());
              break;
            default:
              System.out.println("Invalid Type");
@@ -67,6 +114,7 @@ public class UserHelper{
            System.out.println("Enter Your Password:");
            String password = scanner.nextLine();
            String role = userDao.getRoleFromEmailAndPassword(email,password);
+           System.out.println(role);
            int id = userDao.getId(email,password);
            switch(role){
            case "customer":

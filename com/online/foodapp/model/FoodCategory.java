@@ -1,7 +1,7 @@
 package com.online.foodapp.model;
 
 public enum FoodCategory{
-   Breakfast,
+   BreakFast,
    Meal,
    Briyani,
    Parotta,

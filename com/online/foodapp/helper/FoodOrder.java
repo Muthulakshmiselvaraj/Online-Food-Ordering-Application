@@ -5,6 +5,7 @@ import java.util.Scanner;
 import com.online.foodapp.Dao.FoodOrderDAO;
 import com.online.foodapp.Dao.UserDAO;
 import com.online.foodapp.model.UserData;
+import com.online.foodapp.model.FoodCategory;
 
 public class FoodOrder{
     private Scanner scanner;
@@ -21,12 +22,13 @@ public class FoodOrder{
         System.out.println("----Enjoy Your Food With Us----");
         boolean exit = false;
         while(!exit){
-           System.out.println("1.MyProfile\n2.Search the Food By Location\n3.Search the Food By HotelName\n4.Exit");
+           System.out.println("\nEnter Your Choice\n1. MyProfile\n2. Search the Food By Location\n3. Search the Food By HotelName\n4. Exit");
            int choice = scanner.nextInt();
            scanner.nextLine();
            switch(choice){
               case 1:
                  myProfile(userId);
+                 break;
               case 2:
                  getHotelByLocation(userId);
                  break;
@@ -46,7 +48,7 @@ public class FoodOrder{
     public void myProfile(int userId){
         boolean exit = false;
         while(!exit){
-           System.out.println("1.MyOrders\n2.UpdateMy Profile\n3.Change Password\n4.Exit");
+           System.out.println("\nEnter Your Choice:\n1. MyOrders\n2. Update My Address\n3. Change Password\n4. Exit");
            int choice = scanner.nextInt();
            scanner.nextLine();
            switch(choice){
@@ -87,10 +89,14 @@ public class FoodOrder{
         foodOrderDao.getFoodByLoc(location);
         System.out.println("Enter The Hotel Name:");
         String hotel = scanner.nextLine();
-        foodOrderDao.getFoodCategoryByHotel(hotel);
+        //foodOrderDao.getFoodCategoryByHotel(hotel);
+        System.out.println("Food Categories Are:");
+        for(FoodCategory foods: FoodCategory.values()){
+           System.out.println(" --> "+foods);
+        }
         System.out.println("Enter the FoodCategory:");
         String category = scanner.nextLine();
-        foodOrderDao.getFoodByCategory(category,hotel);
+        foodOrderDao.getFoodByCategory(hotel,category);
         customerOrders(userId,hotel);
     }
     
@@ -100,7 +106,7 @@ public class FoodOrder{
         foodOrderDao.getFoodCategoryByHotel(hotelName);
         System.out.println("Enter the FoodCategory:");
         String category = scanner.nextLine();
-        foodOrderDao.getFoodByCategory(category,hotelName);
+        foodOrderDao.getFoodByCategory(hotelName,category);
         customerOrders(userId,hotelName);
     }
     
@@ -118,15 +124,16 @@ public class FoodOrder{
          Double deliveryFee = foodOrderDao.getDeliveryCharge(hotel);
          Double totalAmount = quantity * price;
          payment(tips,totalAmount,deliveryFee);
-         foodOrderDao.orderDetails( userId,foodlistId,quantity,totalAmount);
+         foodOrderDao.orderDetails(userId,foodlistId,quantity,totalAmount);
     }
     
-    public void payment(double tips,double amount,double deliveryCharge){ 
-         System.out.println("Your Total Amount for Your Food is :"+amount);
-         System.out.println("Tips Amount is :"+tips);
-         System.out.println("Delivery Charge is :"+deliveryCharge);
-         double total = amount+tips+deliveryCharge;
-         System.out.println("Your Total Amount is :"+total);
-             
-    }
+    public void payment(double tips, double amount, double deliveryCharge) {
+    System.out.println("\n------- Payment Summary -------");
+    System.out.printf("%-25s : %.2f%n", "Total Amount for Food", amount);
+    System.out.printf("%-25s : %.2f%n", "Tips Amount", tips);
+    System.out.printf("%-25s : %.2f%n", "Delivery Charge", deliveryCharge);
+    double total = amount + tips + deliveryCharge;
+    System.out.printf("%-25s : %.2f%n", "Total Amount", total);
+    System.out.println("--------------------------------");
+}
 }

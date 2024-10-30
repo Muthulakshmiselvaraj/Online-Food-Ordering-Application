@@ -14,6 +14,9 @@ import com.online.foodapp.Dao.HotelDAO;
 import com.online.foodapp.Dao.FoodOrderDAO;
 import com.online.foodapp.Dao.AdminDAO;
 
+import java.util.InputMismatchException;
+
+
   public class Main{
   private static Scanner scanner = new Scanner(System.in); 
   
@@ -46,10 +49,12 @@ import com.online.foodapp.Dao.AdminDAO;
        UserHelper userHelper = new UserHelper(scanner,userData,userDao,hotel,foodOrder,admin);
        boolean quit = false;
        while(!quit){
-          System.out.println("=====================================");
-          System.out.println("        WELCOME TO FRESH FEAST       ");
-          System.out.println("=====================================");
-          System.out.println("Enter Your Choice\n1.Sign Up(Create Your Account)\n2.Sign In(Already have an Account)\n3.Exit");
+          System.out.println("=========================================");
+          System.out.println("         WELCOME TO FRESH FEAST           ");
+          System.out.println("=========================================\n");
+          System.out.println("Enter Your Choice\n   1.Sign Up(Create Your Account)\n   2.Sign In(Already have an Account)\n   3.Exit");
+          System.out.print("Choice:");
+          try{
           int choice =scanner.nextInt(); 
           scanner.nextLine();
             switch(choice){
@@ -62,11 +67,16 @@ import com.online.foodapp.Dao.AdminDAO;
               case 3:
                 Main.exit();
                 quit = true;
-                System.out.println("Quiting........");
+                System.out.println("Thanks for using Fresh Feast........");
                 break;
               default:
                 System.out.println("Invalid Type");
             }
+          }
+          catch (InputMismatchException e) {
+              System.out.println("Invalid input. Please enter a number between 1 and 3.");
+              scanner.nextLine();
+          }
        }
     }
   }

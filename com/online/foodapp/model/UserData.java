@@ -21,10 +21,6 @@ public class UserData{
       return emailId;
    }
    public void setPhoneNum(Long phoneNum){
-     if(phoneNum < 6000000000L || phoneNum >9999999999L){
-        System.out.println("Sorry!! Given Phone Number is Not Valid");
-        return;
-     }
       this.phoneNum = phoneNum;
    }
    public Long getPhoneNum(){

@@ -1,5 +1,6 @@
 package com.online.foodapp.Dao;
 
+import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +13,7 @@ import com.online.foodapp.database.DBConnection;
 
 
 public class AdminDAO{
+      Connection con = null;
       PreparedStatement pstmt = null;
       Statement stmt = null;
       ResultSet rs = null;
@@ -19,11 +21,12 @@ public class AdminDAO{
          String query = "SELECT ID,OWNERID,HOTELNAME,OWNERNAME,CONTACT,LOCATION,ADDRESS FROM HOTEL ORDER BY ID DESC LIMIT 1; ";
          int id = 0;
            try{
-             stmt = DBConnection.getConnection().createStatement();
+             con = DBConnection.getConnection();
+             stmt = con.createStatement();
              rs = stmt.executeQuery(query);
              while(rs.next()){
                  id = rs.getInt("OWNERID");
-                 System.out.println("HotelId :"+rs.getInt("Id")+"HotelName :"+rs.getString("HOTELNAME")+"  OwnerName :"+rs.getString("OWNERNAME")+"  Contact :"+rs.getLong("CONTACT")+"  Location :"+rs.getString("LOCATION")+"  Address :"+rs.getString("ADDRESS"));
+                 System.out.println("\nHotelId :"+rs.getInt("Id")+"\nHotelName :"+rs.getString("HOTELNAME")+"\nOwnerName :"+rs.getString("OWNERNAME")+"\nContact :"+rs.getLong("CONTACT")+"\nLocation :"+rs.getString("LOCATION")+"\nAddress :"+rs.getString("ADDRESS"));
              }
            }
            catch(SQLException e){
@@ -35,10 +38,11 @@ public class AdminDAO{
      public void hotelDocuments(){
          String query = "SELECT FSSAINO,GSTNO FROM HOTELDOCUMENTS ORDER BY ID DESC LIMIT 1; ";
            try{
-             stmt = DBConnection.getConnection().createStatement();
+             con = DBConnection.getConnection();
+             stmt = con.createStatement();
              rs = stmt.executeQuery(query);
              while(rs.next()){
-                 System.out.println("FSSAI Number :"+rs.getString("FSSAINO")+"  GST Number :"+rs.getString("GSTNO"));
+                 System.out.println("\nFSSAI Number :"+rs.getString("FSSAINO")+"\nGST Number :"+rs.getString("GSTNO"));
              }
            }
            catch(SQLException e){
@@ -49,7 +53,8 @@ public class AdminDAO{
      public void ordersPerDay(){
          String countQuery = "SELECT COUNT(*) AS order_count FROM ORDERDETAILS WHERE DATE = ?;";
            try{
-             pstmt = DBConnection.getConnection().prepareStatement(countQuery);
+             con = DBConnection.getConnection();
+             pstmt = con.prepareStatement(countQuery);
              Date currentDate = new Date(System.currentTimeMillis());
              pstmt.setDate(1,currentDate);
              rs = pstmt.executeQuery();
@@ -66,10 +71,12 @@ public class AdminDAO{
      public void hotels(){
          String hotels = "SELECT HOTELNAME,OWNERNAME,LOCATION FROM HOTEL ;" ;
            try{
-             stmt = DBConnection.getConnection().createStatement();
+             con = DBConnection.getConnection();
+             stmt = con.createStatement();
              rs = stmt.executeQuery(hotels);
              while(rs.next()){
-                System.out.println("HotelName :"+rs.getString("HOTELNAME")+"Ownername :"+rs.getString("OWNERNAME")+"Location :"+rs.getString("LOCATION"));
+                System.out.println("\nHotelName :"+rs.getString("HOTELNAME")+"\nOwnername :"+rs.getString("OWNERNAME")+"\nLocation :"+rs.getString("LOCATION"));
+                System.out.println("------------------------------------");
              }
            }
            catch(SQLException e){
@@ -81,14 +88,16 @@ public class AdminDAO{
          String orders = "SELECT ID,TOTALAMOUNT,DATE FROM ORDERDETAILS;" ;
          String orderscount = "SELECT COUNT(*) AS order_count FROM ORDERDETAILS";
            try{
-             stmt = DBConnection.getConnection().createStatement();
-             Statement countStmt = DBConnection.getConnection().createStatement();
+             con = DBConnection.getConnection();
+             stmt = con.createStatement();
+             Statement countStmt = con.createStatement();
              
              rs = stmt.executeQuery(orders);
              ResultSet countRs = countStmt.executeQuery(orderscount);
              
              while(rs.next()){
-                System.out.println("Order Id:"+rs.getInt("ID")+"Total Amount :"+rs.getDouble("TOTALAMOUNT")+"Date :"+rs.getDate("DATE"));
+                System.out.println("Order Id:"+rs.getInt("ID")+"\nTotal Amount :"+rs.getDouble("TOTALAMOUNT")+"\nDate :"+rs.getDate("DATE"));
+                System.out.println("-------------------------------------");
              }
              
              if(countRs.next()){

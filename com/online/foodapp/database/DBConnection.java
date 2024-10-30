@@ -14,6 +14,7 @@ public class DBConnection{
       try{
         Class.forName("org.postgresql.Driver");
         connection = DriverManager.getConnection(url,userName,password);
+        //System.out.println("Connected");
       }
       catch(SQLException e){
         e.printStackTrace();
@@ -24,12 +25,16 @@ public class DBConnection{
    }
    
    public static Connection getConnection(){
+      if(connection == null){
+         createConnection();         
+      }
       return connection;
    }
    
    public static void closeConnection() throws SQLException{
        if(connection != null){
          connection.close();
+         System.out.println("Database Connection Closed");
        }
    }
 }
